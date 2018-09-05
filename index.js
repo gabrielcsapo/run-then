@@ -3,23 +3,28 @@ const os = require('os')
 const debug = require('debug')
 
 module.exports.getRules = async function (rules = ['default']) {
+  const possiblePaths = [
+    path.resolve(os.homedir(), '.runrc'),
+    path.resolve(os.homedir(), '.runrc.js'),
+    path.resolve(process.cwd(), '.runrc'),
+    path.resolve(process.cwd(), '.runrc.js')
+  ]
+
   try {
-    let localRules = {}
-    let globalRules = {}
+    let allRules = {}
 
-    try {
-      localRules = require(path.resolve(process.cwd(), '.runrc'))
-    } catch (ex) {
-      debug('no local config found')
+    for (const possiblePath of possiblePaths) {
+      try {
+        allRules = Object.assign(allRules, require(possiblePath))
+      } catch (ex) {
+        if (ex.message.indexOf('Cannot find module') === -1) {
+          // rethrow so that user knows about a syntax error that could be happening
+          throw ex
+        } else {
+          debug(`no config found ${possiblePath}`)
+        }
+      }
     }
-
-    try {
-      globalRules = require(path.resolve(os.homedir(), '.runrc'))
-    } catch (ex) {
-      debug('no global config found')
-    }
-
-    const allRules = Object.assign(globalRules, localRules)
 
     return rules.map((rule) => {
       if (allRules[rule]) {

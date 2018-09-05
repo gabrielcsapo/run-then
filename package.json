@@ -1,6 +1,6 @@
 {
   "name": "run-then",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "🚲 do something when, a text parser with purpose",
   "main": "index.js",
   "author": "Gabriel J. Csapo <gabecsapo@gmail.com>",
@@ -14,7 +14,7 @@
   },
   "homepage": "https://github.com/gabrielcsapo/run-then#readme",
   "bin": {
-    "run-then": "run-then.js"
+    "run-then": "./bin/run-then.js"
   },
   "scripts": {
     "lint": "standard index.js bin/index.js test/**.js",
